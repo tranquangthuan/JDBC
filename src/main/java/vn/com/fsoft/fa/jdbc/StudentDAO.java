@@ -13,7 +13,7 @@ public class StudentDAO {
 	public int insertWithStatement() {
 		int result = 0;
 
-		String sql = "INSERT INTO student(name, age ,address) VALUES (N'Tiến Linh', 20, N'Đà Nẵng, Việt Nam');";
+		String sql = "INSERT INTO student(name, age ,address) VALUES (N'Tiến Linh', 20, N'Đà Nẵng, Việt Nam')";
 		Connection conn = null;
 		Statement stmt = null;
 
@@ -44,7 +44,7 @@ public class StudentDAO {
 	public int insert(String name, int age, String address) {
 		int result = 0;
 
-		String sql = "INSERT INTO student(name, age ,address) VALUES (?, ?, ?);";
+		String sql = "INSERT INTO student(name, age ,address) VALUES (?, ?, ?)";
 		Connection conn = null;
 		PreparedStatement stmt = null;
 
@@ -92,6 +92,74 @@ public class StudentDAO {
 				result.add(
 						new Student(rs.getInt("id"), rs.getString("name"), rs.getInt("age"), rs.getString("address")));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				// Close connection
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public int update(int age, String address) {
+		int result = 0;
+
+		String sql = "UPDATE student set address = ? where age = ? ";
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = SQLServerConnectionUtils.getConnection();
+			stmt = conn.prepareStatement(sql);
+
+			stmt.setString(1, address);
+			stmt.setInt(2, age);
+
+			int rowCount = stmt.executeUpdate();
+			System.out.println("Row Count affected = " + rowCount);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				// Close connection
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public boolean updateWithResultSet() {
+		boolean result = false;
+
+		String sql = "SELECT * FROM Student";
+		Connection conn = null;
+		Statement stmt = null;
+
+		try {
+			conn = SQLServerConnectionUtils.getConnection();
+			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+			ResultSet rs = stmt.executeQuery(sql);
+			rs.last();
+			rs.updateString("name", "Update name of last row");
+			rs.updateRow();
+			System.out.println("Row updated");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
