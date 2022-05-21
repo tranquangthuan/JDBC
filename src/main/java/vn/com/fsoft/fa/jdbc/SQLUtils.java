@@ -16,9 +16,8 @@ public class SQLUtils {
 			conn = SQLServerConnectionUtils.getConnection();
 			stmt = conn.createStatement();
 
-			// stmt.executeUpdate(sqlCreatetable);
-			boolean result = stmt.execute(sqlCreatetable);
-			System.out.println("Table created, result = " + result);
+			stmt.execute(sqlCreatetable);
+			System.out.println("Table created =");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
