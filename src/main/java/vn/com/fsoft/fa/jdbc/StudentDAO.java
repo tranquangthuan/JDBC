@@ -178,4 +178,78 @@ public class StudentDAO {
 		return result;
 	}
 
+	public void insertWithoutBatch() {
+		long startTime = System.currentTimeMillis();
+		Connection conn = null;
+		Statement stmt = null;
+
+		try {
+			conn = SQLServerConnectionUtils.getConnection();
+			stmt = conn.createStatement();
+			List<Student> student = UserUtils.init();
+			System.out.println("Without Batch - Inserting... ");
+			for (Student st : student) {
+				String sql = "INSERT INTO student(name, age ,address) VALUES (N'" + st.getName() + "', " + st.getAge()
+						+ ", N'" + st.getAddress() + "');";
+				stmt.executeUpdate(sql);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				// Close connection
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("Total time with out batch: " + (endTime - startTime));
+	}
+
+	public void insertWithBatch(int batchSize) {
+		long startTime = System.currentTimeMillis();
+		Connection conn = null;
+		Statement stmt = null;
+
+		try {
+			conn = SQLServerConnectionUtils.getConnection();
+			stmt = conn.createStatement();
+			conn.setAutoCommit(false);
+			List<Student> student = UserUtils.init();
+			System.out.println("Without Batch - Inserting... ");
+			for (int i = 0; i < student.size(); i++) {
+				Student st = student.get(i);
+				String sql = "INSERT INTO student(name, age ,address) VALUES (N'" + st.getName() + "', " + st.getAge()
+						+ ", N'" + st.getAddress() + "');";
+				stmt.addBatch(sql);
+				if (i % batchSize == 0) {
+					stmt.executeBatch();
+				}
+			}
+			stmt.executeBatch();
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				// Close connection
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("Total time with batch: " + (endTime - startTime));
+	}
 }

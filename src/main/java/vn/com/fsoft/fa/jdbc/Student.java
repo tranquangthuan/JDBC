@@ -18,6 +18,13 @@ public class Student {
 		this.address = address;
 	}
 
+	public Student(String name, int age, String address) {
+		super();
+		this.name = name;
+		this.age = age;
+		this.address = address;
+	}
+
 	public int getId() {
 		return id;
 	}
