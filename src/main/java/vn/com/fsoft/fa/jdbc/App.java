@@ -18,7 +18,7 @@ public class App {
 
 	public static void insert() {
 		StudentDAO studentDAO = new StudentDAO();
-		studentDAO.insert("Thuấn", 30, "Đà Nẵng");
+		studentDAO.insert("Thuấn", 12, "Đà Nẵng");
 	}
 
 	public static void insertWithStatement() {

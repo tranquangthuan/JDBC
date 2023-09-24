@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.fsoft.fa.jdbc.mapper.Mapper;
+import vn.com.fsoft.fa.jdbc.mapper.StudentMapper;
+
 public class StudentDAO {
 
 	public int insertWithStatement() {
@@ -88,9 +91,12 @@ public class StudentDAO {
 			stmt = conn.createStatement();
 
 			ResultSet rs = stmt.executeQuery(sql);
+			Mapper<Student> studentMapper = new StudentMapper();
+			// StudentMapper studentMapper = new StudentMapper();
 			while (rs.next()) {
 				result.add(
 						new Student(rs.getInt("id"), rs.getString("name"), rs.getInt("age"), rs.getString("address")));
+//				result.add(studentMapper.map(rs));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
